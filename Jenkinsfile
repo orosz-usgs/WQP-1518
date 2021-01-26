@@ -26,13 +26,11 @@ pipeline {
       steps {
         sh '''set +e
            mkdir -p $WORKSPACE/wqx
-           sed -i 's/\r$//g' $WORKSPACE/epa_wqx_download.py
-           chmod +x $WORKSPACE/epa_wqx_download.py
 
            docker run --rm \
               -v $WORKSPACE:/usr/src \
               usgswma/python:3.8 \
-              /usr/src/epa_wqx_download.py -d /usr/src/wqx 
+              python /usr/src/epa_wqx_download.py -d /usr/src/wqx
         '''
       }
     }
@@ -66,8 +64,6 @@ pipeline {
 
           sh '''
             set +e
-            sed -i 's/\r$//g' $WORKSPACE/load_epa_wqx_dump_files.sh
-            chmod +x $WORKSPACE/load_epa_wqx_dump_files.sh
 
             docker run -e "EPA_DATABASE_ADDRESS=$EPA_DATABASE_ADDRESS" \
                -e "EPA_SCHEMA_OWNER_USERNAME=$EPA_SCHEMA_OWNER_USERNAME \
@@ -79,7 +75,7 @@ pipeline {
                --rm \
                -v $WORKSPACE:/usr/src \
                usgswma/python:3.8 \
-               /usr/src/load_epa_wqx_dump_files.sh
+               bash /usr/src/load_epa_wqx_dump_files.sh
             '''
         }
       }

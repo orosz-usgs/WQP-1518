@@ -91,7 +91,7 @@ def get_filename(url):
 # Download the file specifed by the url
 def download_wqx_dump_file(url):
     print('   downloading --> {}'.format(url), flush=True)
-    ###download_file(url, get_filename(url))
+    download_file(url, get_filename(url))
 
 def get_multi_part_downloads_dict(urls):
     files_dict = {}  # key is the filename of the combined file, value file parts
