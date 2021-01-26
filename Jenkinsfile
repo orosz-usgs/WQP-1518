@@ -18,7 +18,9 @@ pipeline {
       }
     }
     stage('Checkout scripts') {
+      steps {
         checkout scm // Checks out the repo where the Jenkinsfile is located
+      }
     }
     stage('Download EPA WQX dump files') {
       steps {
