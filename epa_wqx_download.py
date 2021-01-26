@@ -3,7 +3,7 @@ from datetime import datetime
 import os
 import optparse
 import re
-import urllib.request
+import requests
 from urllib.parse import urlparse
 
 from multiprocessing import Pool, cpu_count
@@ -74,7 +74,14 @@ def download_file(url, local_filename):
     # delete any previous download
     if os.path.exists(local_filename):
         os.remove(local_filename)
-    urllib.request.urlretrieve(url, local_filename)
+    # stream download
+    r = requests.get(url, stream=True)
+    if r.status_code == 200:
+        with open(local_filename, 'wb') as f:
+            for chunk in r:
+                f.write(chunk)
+    else:
+        print('ERROR http get {} returned {}'.format(url,str(r.status_code)))
 
 # Download the summary log and save it locally.
 def download_logs():
@@ -108,7 +115,7 @@ def get_multi_part_downloads_dict(urls):
             else:
                 file_list = [filename]
                 files_dict[dest_file] = file_list
-                
+
     # sort lists, so that files are combined in the expected order
     for key in files_dict.keys():
         files_dict[key].sort()
@@ -126,17 +133,17 @@ def combine_files(dest_file, parts_list):
                while True:
                    # Read all bytes of the part
                    bytes = input_file.read(read_size)
-             
+
                    # Break out of loop if we are at end of file
                    if not bytes:
                        break
-                 
+
                    # Write the bytes to the output file
                    output_file.write(bytes)
-             
+
            # Close the input file
            input_file.close()
-         
+
        # Close the output file
        output_file.close()
 
