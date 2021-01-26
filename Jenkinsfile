@@ -26,6 +26,7 @@ pipeline {
       steps {
         sh '''set +e
            mkdir -p $WORKSPACE/wqx
+           sed -i 's/\r$//g' $WORKSPACE/epa_wqx_download.py
            chmod +x $WORKSPACE/epa_wqx_download.py
 
            docker run --rm \
@@ -65,6 +66,7 @@ pipeline {
 
           sh '''
             set +e
+            sed -i 's/\r$//g' $WORKSPACE/load_epa_wqx_dump_files.sh
             chmod +x $WORKSPACE/load_epa_wqx_dump_files.sh
 
             docker run -e "EPA_DATABASE_ADDRESS=$EPA_DATABASE_ADDRESS" \
