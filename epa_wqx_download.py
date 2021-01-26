@@ -90,8 +90,10 @@ def get_filename(url):
 
 # Download the file specifed by the url
 def download_wqx_dump_file(url):
+    filename = get_filename(url)
     print('   downloading --> {}'.format(url), flush=True)
-    download_file(url, get_filename(url))
+    download_file(url, filename)
+    return filename
 
 def get_multi_part_downloads_dict(urls):
     files_dict = {}  # key is the filename of the combined file, value file parts
@@ -171,8 +173,8 @@ if __name__ == "__main__":
     print("There are {} CPUs on this machine ".format(cpu_count()))
     print('Downloading epa WQX dump files and logs ({} in total)...'.format(len(urls)))
     with Pool(cpu_count()) as p:
-        p.map(download_wqx_dump_file, urls)
-        # Pool.close() is a little missednamed. It does not shutdown the pool and
+        results = p.map(download_wqx_dump_file, urls)
+        # Pool.close() is a little missed named. It does not shutdown the pool and
         # free up resources as File close() does. This prevents any more tasks from being
         # submitted to the pool. Needs to be called before using join() to wait for the
         # downloads (worker processes) to finish.
