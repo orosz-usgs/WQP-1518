@@ -24,13 +24,13 @@ pipeline {
     }
     stage('Download EPA WQX dump files') {
       steps {
-        sh '''set +e
+        sh '''
            mkdir -p $WORKSPACE/wqx
 
            docker run --rm \
               -v $WORKSPACE:/usr/src \
               usgswma/python:3.8 \
-              python /usr/src/epa_wqx_download.py -d /usr/src/wqx
+              bash /usr/src/download_epa_wqx_dump_files.sh -d /usr/src/wqx
         '''
       }
     }
@@ -63,8 +63,6 @@ pipeline {
           env.EPA_SCHEMA_OWNER_PASSWORD = secretsJson.EPA_SCHEMA_OWNER_PASSWORD
 
           sh '''
-            set +e
-
             docker run -e "EPA_DATABASE_ADDRESS=$EPA_DATABASE_ADDRESS" \
                -e "EPA_SCHEMA_OWNER_USERNAME=$EPA_SCHEMA_OWNER_USERNAME \
                -e "EPA_SCHEMA_OWNER_PASSWORD=$EPA_SCHEMA_OWNER_PASSWORD \
@@ -74,7 +72,7 @@ pipeline {
                -e "EPA_WQX_DUMP_DIR=/usr/src/wqx" \
                --rm \
                -v $WORKSPACE:/usr/src \
-               usgswma/python:3.8 \
+               postgres \
                bash /usr/src/load_epa_wqx_dump_files.sh
             '''
         }
