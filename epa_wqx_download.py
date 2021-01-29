@@ -155,9 +155,9 @@ def add_dump_extension(files_dict):
 
         new_name = ''
         if filename.endswith('.gz'):
-            new_name = filename.replace('.gz', '.dump')
+            new_name = filename.replace('.gz', '.dump.gz')
         elif filename.endswith('_gz'):
-            new_name = filename.replace('_gz', '.dump')
+            new_name = filename.replace('_gz', '.dump.gz')
         else: 
             new_name = filename + '.dump'
 

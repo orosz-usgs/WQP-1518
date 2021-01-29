@@ -34,6 +34,13 @@ pipeline {
         '''
       }
     }
+    stage('Uncompress EPA WQX dump files') {
+      steps {
+        sh '''
+           gunzip $WORKSPACE/wqx/*.dump.gz
+        '''
+      }
+    }
     stage('Load EPA WQX dump files') {
       steps {
         script {
