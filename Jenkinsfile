@@ -63,13 +63,12 @@ pipeline {
           env.EPA_SCHEMA_OWNER_PASSWORD = secretsJson.EPA_SCHEMA_OWNER_PASSWORD
 
           sh '''
-            docker run -e "EPA_DATABASE_ADDRESS=$EPA_DATABASE_ADDRESS" \
-               -e "EPA_SCHEMA_OWNER_USERNAME=$EPA_SCHEMA_OWNER_USERNAME \
-               -e "EPA_SCHEMA_OWNER_PASSWORD=$EPA_SCHEMA_OWNER_PASSWORD \
-               -e "EPA_DATABASE_NAME=$EPA_DATABASE_NAME" \
-               -e "DATABASE_PORT=$EPA_DATABASE_PORT" \
-               -e "DATABASE_PORT=$DATABASE_PORT" \
-               -e "EPA_WQX_DUMP_DIR=/usr/src/wqx" \
+            docker run -e EPA_DATABASE_ADDRESS=$EPA_DATABASE_ADDRESS \
+               -e EPA_SCHEMA_OWNER_USERNAME=$EPA_SCHEMA_OWNER_USERNAME \
+               -e EPA_SCHEMA_OWNER_PASSWORD="$EPA_SCHEMA_OWNER_PASSWORD" \
+               -e EPA_DATABASE_NAME=$EPA_DATABASE_NAME \
+               -e DATABASE_PORT=$DATABASE_PORT \
+               -e EPA_WQX_DUMP_DIR=/usr/src/wqx \
                --rm \
                -v $WORKSPACE:/usr/src \
                postgres \
