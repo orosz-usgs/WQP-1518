@@ -51,7 +51,7 @@ export PGPASSWORD=$EPA_DB_OWNER_PASSWORD
 echo "Deleting old wqx_dump tables..."
 echo "select wqx_dump.drop_tables();" > $EPA_WQX_DUMP_DIR//drop_wqx_dump_tables.sql
 psql -h $DB_ADDRESS -U $EPA_SCHEMA_OWNER_USERNAME \
-     -d $EPA_DATABASE_NAME -p DATABASE_PORT \
+     -d $EPA_DATABASE_NAME -p $DATABASE_PORT \
      -f $EPA_WQX_DUMP_DIR/drop_wqx_dump_tables.sql
 
 # load the files
