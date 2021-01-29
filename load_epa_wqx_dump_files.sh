@@ -4,13 +4,13 @@
 set -e
 set -o pipefail
 
-# This script loads postgres epa wqx dump filesinto the wqx_schema.
+# This script loads epa Postgres wqx dump files into the wqx_schema
 # Enviroment variables needed:
-export DB_ADDRESS=localhost
-export EPA_SCHEMA_OWNER_USERNAME=epa_owner
-export EPA_DB_OWNER_PASSWORD=changeMe
-export EPA_DATABASE_NAME=db_name
-export EPA_WQX_DUMP_DIR=.  # directory where Postgresq pg_dump achive files are located
+# EPA_DATABASE_ADDRESS  -- Host name or IP address of the PostgreSQL database.
+# EPA_SCHEMA_OWNER_USERNAME -- Role which owns the **WQX_SCHEMA_NAME** and **STORETW_SCHEMA_NAME** database objects.
+# EPA_SCHEMA_OWNER_PASSWORD --  Password for the **EPA_SCHEMA_OWNER_USERNAME** role.
+# EPA_DATABASE_NAME -- Name of the PostgreSQL database containing the wqx_dump schema.
+# EPA_WQX_DUMP_DIR  -- directory where the Postgresq pg_dump archive files are located
 
 # Optional DATABASE_PORT defaults to 5432
 if [ -z "$DATABASE_PORT" ]; then
@@ -19,13 +19,8 @@ fi
 
 export PATH=/mingw64/bin:$PATH
 
-if [ -z "$DB_ADDRESS" ]; then
-  echo "The Postgres host name (DB_ADDRESS) to connect to is not defined."
-  exit 2
-fi
-
-if [ -z "$EPA_DATABASE_NAME" ]; then
-  echo "The database name (EPA_DATABASE_NAME) to restore into is not defined."
+if [ -z "$EPA_DATABASE_ADDRESS" ]; then
+  echo "The Postgres server (EPA_DATABASE_ADDRESS) to connect to is not defined."
   exit 2
 fi
 
@@ -39,28 +34,33 @@ if [ -z "$EPA_SCHEMA_OWNER_PASSWORD" ]; then
   exit 2
 fi
 
+if [ -z "$EPA_DATABASE_NAME" ]; then
+  echo "The database name (EPA_DATABASE_NAME) to restore into is not defined."
+  exit 2
+fi
+
 if [ -z "$EPA_WQX_DUMP_DIR" ]; then
   echo "The directory containing the epa Postgres dump files to load is not defined."
   exit 2
 fi
 
 # used by psql & pg_restore
-export PGPASSWORD=$EPA_DB_OWNER_PASSWORD
+export PGPASSWORD=$EPA_SCHEMA_OWNER_PASSWORD
 
 # clear out the old tables
 echo "Deleting old wqx_dump tables..."
 echo "select wqx_dump.drop_tables();" > $EPA_WQX_DUMP_DIR//drop_wqx_dump_tables.sql
-psql -h $DB_ADDRESS -U $EPA_SCHEMA_OWNER_USERNAME \
+psql -h $EPA_DATABASE_ADDRESS -U $EPA_SCHEMA_OWNER_USERNAME \
      -d $EPA_DATABASE_NAME -p $DATABASE_PORT \
      -f $EPA_WQX_DUMP_DIR/drop_wqx_dump_tables.sql
 
 # load the files
 echo "Loading eqp wqx dump files into address=$DB_ADDRESS, port==$DATABASE_PORT, user=$EPA_SCHEMA_OWNER_USERNAME"
-for file in $EPA_WQX_DUMP_DIR/*.dump; do 
-   echo "Loading $file..."
+for dump_file in $EPA_WQX_DUMP_DIR/*.dump; do
+   echo "Loading $dump_file ..."
 
-   pg_restore --host $DB_ADDRESS --port=$DATABASE_PORT --username=$EPA_SCHEMA_OWNER_USERNAME \
-             --data-only --dbname=$EPA_DATABASE_NAME --dbname=dbname= --schema=wqx_dump
+   pg_restore --host $$EPA_DATABASE_ADDRESS --port=$DATABASE_PORT --username=$EPA_SCHEMA_OWNER_USERNAME \
+             --data-only --dbname=$EPA_DATABASE_NAME --dbname=$EPA_DATABASE_NAME --schema=wqx_dump \
              --no-privileges  $dump_file
 done
 
