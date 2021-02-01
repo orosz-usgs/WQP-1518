@@ -59,7 +59,7 @@ echo "Loading eqp wqx dump files into address=$DB_ADDRESS, port==$DATABASE_PORT,
 for dump_file in $EPA_WQX_DUMP_DIR/*.dump; do
    echo "Loading $dump_file ..."
 
-   pg_restore --host $$EPA_DATABASE_ADDRESS --port=$DATABASE_PORT --username=$EPA_SCHEMA_OWNER_USERNAME \
+   pg_restore --host $EPA_DATABASE_ADDRESS --port=$DATABASE_PORT --username=$EPA_SCHEMA_OWNER_USERNAME \
              --data-only --dbname=$EPA_DATABASE_NAME --dbname=$EPA_DATABASE_NAME --schema=wqx_dump \
              --no-privileges  $dump_file
 done
