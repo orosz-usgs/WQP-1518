@@ -188,7 +188,7 @@ if __name__ == "__main__":
         p.close()
         p.join()
 
-    print('Files downloads completed at {}'.format(now()), flush=True)
+    print('File downloads completed at {}'.format(now()), flush=True)
 
     print('Combining multi part downloads...')
     files_dict = get_multi_part_downloads_dict(urls)
