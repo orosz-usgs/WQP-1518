@@ -84,5 +84,10 @@ pipeline {
         }
       }
     }
+    stage('Kick off epa etl') {
+      steps {
+        build job: 'run-epa-etl', parameters: [[$class: 'StringParameterValue', name: 'ENVIRONMENT', value: params.DEPLOY_STAGE]], wait: false
+      }
+    }
   }
 }

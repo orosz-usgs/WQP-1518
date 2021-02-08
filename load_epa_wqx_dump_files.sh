@@ -55,11 +55,11 @@ psql -h $EPA_DATABASE_ADDRESS -U $EPA_SCHEMA_OWNER_USERNAME \
      -f $EPA_WQX_DUMP_DIR/drop_wqx_dump_tables.sql
 
 # load the files
-echo "Loading eqp wqx dump files into address=$EPA_DATABASE_ADDRESS, port==$DATABASE_PORT, user=$EPA_SCHEMA_OWNER_USERNAME"
+echo "Loading epa wqx dump files into address=$EPA_DATABASE_ADDRESS, port==$DATABASE_PORT, user=$EPA_SCHEMA_OWNER_USERNAME"
 for dump_file in $EPA_WQX_DUMP_DIR/*.dump; do
    echo "Loading $dump_file ..."
 
-   pg_restore --host $EPA_DATABASE_ADDRESS --port=$DATABASE_PORT --username=$EPA_SCHEMA_OWNER_USERNAME \
+   pg_restore -v --host $EPA_DATABASE_ADDRESS --port=$DATABASE_PORT --username=$EPA_SCHEMA_OWNER_USERNAME \
              --dbname=$EPA_DATABASE_NAME --schema=wqx_dump --no-privileges --no-owner $dump_file
 done
 
