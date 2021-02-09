@@ -63,8 +63,9 @@ def get_wqx_dump_file_urls():
         filename = fields[8]
         filename = os.path.basename(filename)
         if filename != SUMMARY_LOG:
-
-            urls.append(BASE_URL + '/' + filename);
+            to_add = BASE_URL + '/' + filename
+            if not to_add in urls:
+                urls.append(to_add);
 
     # at a minuim, we expect dumps files for tables 'Result'
     return urls
